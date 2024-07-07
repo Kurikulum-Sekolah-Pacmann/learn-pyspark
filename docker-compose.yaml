@@ -1,0 +1,13 @@
+services:
+  pyspark:
+    hostname: pyspark
+    container_name: pyspark_container
+    image: jupyter/pyspark-notebook
+    restart: on-failure
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./notebook:/home/jovyan/work
