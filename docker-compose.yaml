@@ -2,7 +2,7 @@ services:
   pyspark:
     hostname: pyspark
     container_name: pyspark_container
-    image: jupyter/pyspark-notebook
+    image: quay.io/jupyter/pyspark-notebook
     restart: on-failure
     environment:
       JUPYTER_ENABLE_LAB: "yes"
@@ -11,3 +11,25 @@ services:
       - "4040:4040"
     volumes:
       - ./notebook:/home/jovyan/work
+    networks:
+      - my_network
+
+  postgres_source:
+    hostname: postgres_source
+    container_name: postgres_source_container
+    image: 'postgres:latest'
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=hotel_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=cobapassword
+    volumes:
+        - ./postgres_source/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+        - 5432:5432
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
