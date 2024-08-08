@@ -2,7 +2,10 @@ services:
   pyspark:
     hostname: pyspark
     container_name: pyspark_container
-    image: quay.io/jupyter/pyspark-notebook
+    build: 
+       context: .
+       dockerfile: Dockerfile
+    image: pyspark_custom_pacmann
     restart: on-failure
     environment:
       JUPYTER_ENABLE_LAB: "yes"
@@ -30,6 +33,22 @@ services:
     networks:
       - my_network
 
+  movie_db:
+    image: postgres:latest
+    hostname: movie_db
+    container_name: movie_db_container
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=movie
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=cobapassword
+    volumes:
+      - ./movie_data/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5435:5432 
+    networks:
+      - my_network
+  
 networks:
   my_network:
     driver: bridge
